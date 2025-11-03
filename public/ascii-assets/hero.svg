@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" role="img" aria-label="PAUL MADU">
+  <defs>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F0FF"/>
+      <stop offset="100%" stop-color="#00FF9F"/>
+    </linearGradient>
+    <filter id="outerGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur1"/>
+      <feColorMatrix in="blur1" type="matrix" values="0 0 0 0 0   0 0 0 0 1   0 0 0 0 1   0 0 0 1 0" result="cyanglow"/>
+      <feMerge>
+        <feMergeNode in="cyanglow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Centered container guidelines: 1200x300 -->
+  <!-- Outer glow stroke layer -->
+  <text x="50%" y="52%" text-anchor="middle" dominant-baseline="middle"
+        font-family="'Segoe UI','Montserrat','Poppins','Roboto','Ubuntu',sans-serif"
+        font-size="170" letter-spacing="4"
+        fill="none" stroke="#00F0FF" stroke-width="8" opacity="0.45"
+        filter="url(#outerGlow)">PAUL MADU</text>
+
+  <!-- Solid stroke for crisp edges -->
+  <text x="50%" y="52%" text-anchor="middle" dominant-baseline="middle"
+        font-family="'Segoe UI','Montserrat','Poppins','Roboto','Ubuntu',sans-serif"
+        font-size="170" letter-spacing="4"
+        fill="none" stroke="#003C46" stroke-width="3" opacity="0.9">PAUL MADU</text>
+
+  <!-- Main fill with gradient and soft inner glow -->
+  <text x="50%" y="52%" text-anchor="middle" dominant-baseline="middle"
+        font-family="'Segoe UI','Montserrat','Poppins','Roboto','Ubuntu',sans-serif"
+        font-size="170" letter-spacing="4"
+        fill="url(#textGrad)" filter="url(#softGlow)">PAUL MADU</text>
+
+  <!-- Subtle scanline highlight across text -->
+  <rect x="150" y="115" width="900" height="6" fill="#00F0FF" opacity="0.12"/>
+</svg>
