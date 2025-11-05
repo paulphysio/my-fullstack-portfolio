@@ -50,7 +50,7 @@
   - Mobile app (`Contact.jsx`)
 
 #### X (Twitter)
-- ✅ Changed from `@paulmadu` → **`@phsiodev_1`**
+- ✅ Changed from `@paulmadu` → **`@physiodev_1`**
 - ✅ Updated in:
   - Footer - added X link
   - Contact page
@@ -89,7 +89,7 @@ public/ascii-assets/
 
 ### X (Twitter)
 - Old: `https://twitter.com/paulmadu`
-- New: **`https://x.com/phsiodev_1`**
+- New: **`https://x.com/physiodev_1`**
 
 ### LinkedIn (unchanged)
 - `https://linkedin.com/in/paulmadu`

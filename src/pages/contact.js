@@ -202,12 +202,12 @@ export default function Contact() {
                 <div className="info-item">
                   <span className="info-label">X (Twitter):</span>
                   <a 
-                    href="https://x.com/phsiodev_1" 
+                    href="https://x.com/physiodev_1" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="info-link"
                   >
-                    @phsiodev_1
+                    @physiodev_1
                   </a>
                 </div>
 

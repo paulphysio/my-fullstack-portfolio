@@ -6,7 +6,7 @@ export default function ContactScreen() {
     { label: 'Email', value: 'paul@example.com', url: 'mailto:paul@example.com' },
     { label: 'GitHub', value: 'github.com/paulphysio', url: 'https://github.com/paulphysio' },
     { label: 'LinkedIn', value: 'linkedin.com/in/paulmadu', url: 'https://linkedin.com/in/paulmadu' },
-    { label: 'X', value: '@phsiodev_1', url: 'https://x.com/phsiodev_1' },
+    { label: 'X', value: '@physiodev_1', url: 'https://x.com/physiodev_1' },
   ];
 
   return (

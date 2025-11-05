@@ -102,7 +102,7 @@ export default function Layout({ children }) {
             <a href="https://www.linkedin.com/in/paul-madu-a69235222" target="_blank" rel="noopener noreferrer">
               LinkedIn
             </a>
-            <a href="https://x.com/phsiodev_1" target="_blank" rel="noopener noreferrer">
+            <a href="https://x.com/physiodev_1" target="_blank" rel="noopener noreferrer">
               X
             </a>
             <a href="mailto:obinnap350@gmail.com">Email</a>
