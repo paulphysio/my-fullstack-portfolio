@@ -375,6 +375,8 @@
   z-index: var(--z-modal);
   animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(8px);
+  overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 @keyframes modalFadeIn {
@@ -488,6 +490,29 @@
   padding: var(--space-6);
   overflow-y: auto;
   max-height: calc(85vh - 80px);
+  overscroll-behavior: contain;
+}
+
+/* Custom scrollbar for modal */
+.stack-modal-body::-webkit-scrollbar {
+  width: 10px;
+}
+
+.stack-modal-body::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}
+
+.stack-modal-body::-webkit-scrollbar-thumb {
+  background: var(--color-accent-cyan);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.stack-modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-green);
+  background-clip: padding-box;
 }
 
 .stack-modal-content {
