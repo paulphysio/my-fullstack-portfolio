@@ -5,7 +5,7 @@ import Typewriter from '@/components/Typewriter';
 
 export default function About() {
   const skills = {
-    'Web3 & Blockchain': ['Solana', 'Rust', 'Anchor Framework', 'Web3.js', 'Metaplex', 'Phantom', 'Solflare', 'SPL Tokens'],
+    'Web3 & Blockchain': ['Solana', 'Web3.js (Native)', 'Anchor Framework', 'Metaplex', 'Phantom', 'Solflare', 'SPL Tokens', 'Rust'],
     Frontend: ['HTML5', 'CSS3', 'JavaScript', 'TypeScript', 'React', 'Next.js', 'React Native', 'Bootstrap'],
     Backend: ['Python', 'Django', 'Django REST Framework', 'Node.js', 'Express', 'FastAPI', 'GraphQL'],
     Database: ['PostgreSQL', 'MongoDB', 'Redis', 'Prisma', 'SQLAlchemy'],
@@ -80,9 +80,10 @@ export default function About() {
               </p>
               <p>
                 Today, at <strong>SempaiHQ</strong>, I'm combining everything I've learned to build the future of content creation. 
-                I architect smart contracts in Rust using Anchor Framework, design token economics, build React Native mobile apps, 
-                and create seamless Web3 experiences. From in-app Solana wallet creation to on-chain gaming (Kaito Adventure), real-time 
-                chat systems, and creator monetization—I'm pushing the boundaries of what's possible in decentralized applications.
+                I develop Solana programs using Anchor Framework and integrate them seamlessly with Web3.js, design token economics, 
+                build React Native mobile apps, and create seamless Web3 experiences. From in-app Solana wallet creation using Web3.js 
+                to on-chain gaming (Kaito Adventure), real-time chat systems, and creator monetization—I'm pushing the boundaries of 
+                what's possible in decentralized applications.
               </p>
               <p>
                 I believe in building with purpose, writing clean and secure code, and empowering users through decentralization. 

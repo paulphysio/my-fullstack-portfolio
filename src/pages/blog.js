@@ -1,36 +1,18 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import { useState } from 'react';
 import Layout from '@/components/Layout';
 import TerminalWindow from '@/components/TerminalWindow';
-
-const blogPosts = [
-  {
-    slug: 'building-this-portfolio',
-    title: 'Building a Terminal-Themed Portfolio with Next.js',
-    date: '2024-01-15',
-    excerpt: 'How I built this portfolio with a hacker aesthetic using Next.js, ASCII art, and custom animations.',
-    readTime: '8 min read',
-    tags: ['Next.js', 'React', 'Design'],
-  },
-  {
-    slug: 'fullstack-architecture',
-    title: 'Modern Fullstack Architecture Patterns',
-    date: '2024-01-10',
-    excerpt: 'Exploring scalable architecture patterns using Next.js, Django, and PostgreSQL.',
-    readTime: '12 min read',
-    tags: ['Architecture', 'Django', 'PostgreSQL'],
-  },
-  {
-    slug: 'typescript-tips',
-    title: '10 TypeScript Tips for Better Code',
-    date: '2024-01-05',
-    excerpt: 'Practical TypeScript techniques to improve your development workflow and code quality.',
-    readTime: '6 min read',
-    tags: ['TypeScript', 'Tips', 'Best Practices'],
-  },
-];
+import { getAllPosts, getAllCategories, formatDate } from '@/lib/blog';
 
 export default function Blog() {
+  const allPosts = getAllPosts();
+  const categories = getAllCategories();
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  
+  const filteredPosts = selectedCategory === 'all' 
+    ? allPosts 
+    : allPosts.filter(post => post.category === selectedCategory);
   return (
     <Layout>
       <Head>
@@ -44,19 +26,49 @@ export default function Blog() {
             <span className="prompt">$</span> cat blog/*.md
           </h1>
           <p className="page-description">
-            Thoughts on web development, architecture, and technology
+            Technical insights on Web3, Solana, blockchain, and full-stack development
           </p>
         </header>
 
+        {/* Category Filter */}
+        <div className="blog-filters">
+          <TerminalWindow title="filters" showControls={false}>
+            <div className="filter-buttons">
+              <button
+                className={`filter-btn ${selectedCategory === 'all' ? 'active' : ''}`}
+                onClick={() => setSelectedCategory('all')}
+              >
+                <span className="prompt">→</span> All Posts ({allPosts.length})
+              </button>
+              {categories.map(category => (
+                <button
+                  key={category}
+                  className={`filter-btn ${selectedCategory === category ? 'active' : ''}`}
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  <span className="prompt">→</span> {category} ({allPosts.filter(p => p.category === category).length})
+                </button>
+              ))}
+            </div>
+          </TerminalWindow>
+        </div>
+
         <div className="blog-list">
-          {blogPosts.map((post) => (
-            <article key={post.slug} className="blog-post-card">
+          {filteredPosts.map((post, index) => (
+            <article key={post.slug} className="blog-post-card" style={{ animationDelay: `${index * 0.1}s` }}>
               <TerminalWindow title={`${post.slug}.md`} showControls={false}>
                 <div className="blog-post-content">
-                  <div className="blog-post-meta">
-                    <time className="blog-date">{post.date}</time>
-                    <span className="blog-separator">•</span>
-                    <span className="blog-read-time">{post.readTime}</span>
+                  <div className="blog-post-header">
+                    <div className="blog-post-meta">
+                      <time className="blog-date">{formatDate(post.date)}</time>
+                      <span className="blog-separator">•</span>
+                      <span className="blog-read-time">{post.readTime}</span>
+                    </div>
+                    {post.featured && (
+                      <span className="featured-badge">
+                        <span className="featured-star">★</span> Featured
+                      </span>
+                    )}
                   </div>
 
                   <h2 className="blog-post-title">
@@ -64,6 +76,11 @@ export default function Blog() {
                       {post.title}
                     </Link>
                   </h2>
+
+                  <div className="blog-category-badge">
+                    <span className="category-icon">📁</span>
+                    {post.category}
+                  </div>
 
                   <p className="blog-post-excerpt">{post.excerpt}</p>
 
@@ -76,7 +93,8 @@ export default function Blog() {
                   </div>
 
                   <Link href={`/blog/${post.slug}`} className="blog-read-more">
-                    Read more →
+                    <span>Read full article</span>
+                    <span className="arrow">→</span>
                   </Link>
                 </div>
               </TerminalWindow>
@@ -84,12 +102,32 @@ export default function Blog() {
           ))}
         </div>
 
+        {filteredPosts.length === 0 && (
+          <div className="blog-empty">
+            <TerminalWindow title="no-results" showControls={false}>
+              <p className="empty-message">
+                <span className="prompt">$</span> No posts found in this category.
+              </p>
+            </TerminalWindow>
+          </div>
+        )}
+
         <div className="blog-footer">
-          <TerminalWindow title="note" showControls={false}>
-            <p className="blog-note">
-              More posts coming soon. Subscribe to my newsletter or follow me on social media 
-              to get notified about new articles.
-            </p>
+          <TerminalWindow title="stats.txt" showControls={false}>
+            <div className="blog-stats">
+              <div className="stat-item">
+                <span className="stat-label">Total Posts:</span>
+                <span className="stat-value">{allPosts.length}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Categories:</span>
+                <span className="stat-value">{categories.length}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Latest:</span>
+                <span className="stat-value">{formatDate(allPosts[0]?.date)}</span>
+              </div>
+            </div>
           </TerminalWindow>
         </div>
       </div>

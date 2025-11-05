@@ -23,7 +23,7 @@ export default function Home() {
     '> Loading fullstack developer profile...',
     '> Name: Paul Madu',
     '> Role: Web3 Developer | Fullstack Engineer | Blockchain Architect',
-    '> Specialties: Solana • Rust • React • Next.js • Python • Django',
+    '> Specialties: Solana • Web3.js • React • Next.js • Python • Django',
     '> Focus: Building decentralized applications on Solana blockchain',
     '> Status: Available for Web3 projects',
     '> Type "help" or explore below ↓',
@@ -47,7 +47,7 @@ export default function Home() {
               </div>
               <div className="hero-subtitle">
                 <p>
-                  Web3 & Full‑Stack Engineer — Solana · Rust · React · Next.js · TypeScript · Node.js · Python/Django · PostgreSQL · AWS · Docker
+                  Web3 & Full‑Stack Engineer — Solana · Web3.js · React · Next.js · TypeScript · Node.js · Python/Django · PostgreSQL · AWS · Rust · Docker
                 </p>
               </div>
               
@@ -73,53 +73,139 @@ export default function Home() {
         </section>
 
         <section className="quick-links">
-          <Link href="/projects" className="quick-link-card">
-            <div className="card-icon">
-              <pre>{`
-  ┌───┐
-  │ > │
-  └───┘
-              `}</pre>
-            </div>
-            <h3>Projects</h3>
-            <p>Explore my work</p>
-          </Link>
+          <h2 className="section-title quick-links-title">
+            <span className="prompt">$</span> ls -la ./navigation
+          </h2>
+          <div className="quick-links-grid">
+            <Link href="/projects" className="quick-link-card">
+              <div className="card-border-glow"></div>
+              <div className="card-content-wrapper">
+                <div className="card-header">
+                  <div className="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="14" width="7" height="7"></rect>
+                      <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                  </div>
+                  <div className="card-status">
+                    <span className="status-dot"></span>
+                    <span className="status-text">ACTIVE</span>
+                  </div>
+                </div>
+                <h3 className="card-title">
+                  <span className="title-bracket">[</span>
+                  <span className="title-text">Projects</span>
+                  <span className="title-bracket">]</span>
+                </h3>
+                <p className="card-description">
+                  <span className="prompt-small">→</span> Explore decentralized applications, Web3 platforms, and full-stack solutions
+                </p>
+                <div className="card-footer">
+                  <span className="card-command">cd ./projects</span>
+                  <span className="card-arrow">→</span>
+                </div>
+              </div>
+              <div className="card-scanline"></div>
+            </Link>
 
-          <Link href="/about" className="quick-link-card">
-            <div className="card-icon">
-              <pre>{`
-  ┌─┬─┐
-  │ │ │
-  └─┴─┘
-              `}</pre>
-            </div>
-            <h3>About</h3>
-            <p>Get to know me</p>
-          </Link>
+            <Link href="/about" className="quick-link-card">
+              <div className="card-border-glow"></div>
+              <div className="card-content-wrapper">
+                <div className="card-header">
+                  <div className="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
+                  <div className="card-status">
+                    <span className="status-dot"></span>
+                    <span className="status-text">ONLINE</span>
+                  </div>
+                </div>
+                <h3 className="card-title">
+                  <span className="title-bracket">[</span>
+                  <span className="title-text">About</span>
+                  <span className="title-bracket">]</span>
+                </h3>
+                <p className="card-description">
+                  <span className="prompt-small">→</span> Self-taught developer journey from 2019 to leading Web3 development at SempaiHQ
+                </p>
+                <div className="card-footer">
+                  <span className="card-command">cat ./about.md</span>
+                  <span className="card-arrow">→</span>
+                </div>
+              </div>
+              <div className="card-scanline"></div>
+            </Link>
 
-          <Link href="/blog" className="quick-link-card">
-            <div className="card-icon">
-              <pre>{`
-  ┌───┐
-  │═══│
-  └───┘
-              `}</pre>
-            </div>
-            <h3>Blog</h3>
-            <p>Read my thoughts</p>
-          </Link>
+            <Link href="/blog" className="quick-link-card">
+              <div className="card-border-glow"></div>
+              <div className="card-content-wrapper">
+                <div className="card-header">
+                  <div className="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                  </div>
+                  <div className="card-status">
+                    <span className="status-dot status-pulse"></span>
+                    <span className="status-text">UPDATED</span>
+                  </div>
+                </div>
+                <h3 className="card-title">
+                  <span className="title-bracket">[</span>
+                  <span className="title-text">Blog</span>
+                  <span className="title-bracket">]</span>
+                </h3>
+                <p className="card-description">
+                  <span className="prompt-small">→</span> Technical insights on Solana, Web3, blockchain development, and fullstack engineering
+                </p>
+                <div className="card-footer">
+                  <span className="card-command">ls ./blog/*.md</span>
+                  <span className="card-arrow">→</span>
+                </div>
+              </div>
+              <div className="card-scanline"></div>
+            </Link>
 
-          <Link href="/contact" className="quick-link-card">
-            <div className="card-icon">
-              <pre>{`
-  ┌─@─┐
-  │   │
-  └───┘
-              `}</pre>
-            </div>
-            <h3>Contact</h3>
-            <p>Let's connect</p>
-          </Link>
+            <Link href="/contact" className="quick-link-card">
+              <div className="card-border-glow"></div>
+              <div className="card-content-wrapper">
+                <div className="card-header">
+                  <div className="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                      <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                  </div>
+                  <div className="card-status">
+                    <span className="status-dot"></span>
+                    <span className="status-text">READY</span>
+                  </div>
+                </div>
+                <h3 className="card-title">
+                  <span className="title-bracket">[</span>
+                  <span className="title-text">Contact</span>
+                  <span className="title-bracket">]</span>
+                </h3>
+                <p className="card-description">
+                  <span className="prompt-small">→</span> Let's collaborate on innovative Web3 projects and decentralized solutions
+                </p>
+                <div className="card-footer">
+                  <span className="card-command">./contact.sh</span>
+                  <span className="card-arrow">→</span>
+                </div>
+              </div>
+              <div className="card-scanline"></div>
+            </Link>
+          </div>
         </section>
 
         <section className="tech-stack-preview">
