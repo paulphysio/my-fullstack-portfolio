@@ -3,6 +3,7 @@
 @import './components.css';
 @import './pages.css';
 @import './solana-ecosystem.css';
+@import './project-detail.css';
 
 /* Global Hacker Effects */
 body {
