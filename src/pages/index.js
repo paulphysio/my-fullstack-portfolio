@@ -60,13 +60,12 @@ export default function Home() {
                 />
               </div>
               
-              <div className="web3-badge">
-                <div className="badge-container">
-                  <AsciiImage src="/ascii-art/solana.png" alt="Solana" />
-                </div>
-                <div className="badge-container">
-                  <AsciiImage src="/ascii-art/web3.png" alt="Web3" />
-                </div>
+              <div className="web3-project-line">
+                <span className="cmd-prompt">$</span>
+                <span className="cmd-text">cat ./current-project.txt</span>
+                <span className="cmd-output">
+                  → Leading Web3 development at <span className="highlight-sempai">SempaiHQ</span> • Solana Ecosystem
+                </span>
               </div>
             </div>
           </TerminalWindow>

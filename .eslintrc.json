@@ -3,6 +3,15 @@
   "rules": {
     "react/no-unescaped-entities": "off",
     "@next/next/no-img-element": "off",
-    "react/prop-types": "off"
-  }
+    "react/prop-types": "off",
+    "no-console": "off"
+  },
+  "overrides": [
+    {
+      "files": ["src/pages/api/**/*.js"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
 }

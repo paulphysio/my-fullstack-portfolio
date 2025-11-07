@@ -1,0 +1,51 @@
+/* ═══════════════════════════════════════════════════════════════
+   MINIMAL WEB3 PROJECT LINE - CMD AESTHETIC
+   ═══════════════════════════════════════════════════════════════ */
+
+.web3-project-line {
+  margin: var(--space-5) 0;
+  padding: var(--space-3);
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.8;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.cmd-prompt {
+  color: #00ff41;
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
+}
+
+.cmd-text {
+  color: #00ffff;
+  margin-right: var(--space-3);
+}
+
+.cmd-output {
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.highlight-sempai {
+  color: #00ff41;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
+  transition: all 0.3s ease;
+}
+
+.highlight-sempai:hover {
+  color: #00ffff;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.9);
+}
+
+@media (max-width: 768px) {
+  .web3-project-line {
+    font-size: 12px;
+  }
+}

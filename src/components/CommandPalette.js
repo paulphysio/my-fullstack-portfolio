@@ -79,7 +79,7 @@ export default function CommandPalette({ isOpen, onClose }) {
     
     if (command.action.startsWith('#')) {
       // Handle special actions
-      console.log('Execute:', command.action);
+      // Special action executed
     } else {
       router.push(command.action);
     }
