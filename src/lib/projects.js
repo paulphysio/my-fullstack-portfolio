@@ -6,7 +6,7 @@ export const projects = [
     longDescription: 'SempaiHQ is a groundbreaking fully decentralized Web3 application built on Solana blockchain, revolutionizing the anime creators community. Users can create in-app Solana wallets or connect external wallets (Phantom, Solflare) with Google authentication for enhanced security. The platform features a token-based economy where users claim tokens to access premium anime novels and manga content. Comprehensive features include: interactive anime novels and manga library, integrated crypto wallet for sending/receiving tokens and SOL, real-time chat system, community polls and voting, Kaito Adventure Game (on-chain gaming), and creator monetization tools. Available as both web dApp and mobile application with cross-platform wallet synchronization.',
     tech: ['Next.js', 'Solana', 'Rust', 'Anchor', 'React Native', 'Web3.js', 'TypeScript', 'PostgreSQL', 'Redis'],
     github: '',
-    live: 'https://sempaihq.xyz',
+    live: 'https://sempaihq.com',
     image: '/projects/sempaihq.png',
     status: 'live',
     year: 2024,
