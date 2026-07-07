@@ -18,7 +18,7 @@ export default function Projects() {
     <Layout>
       <Head>
         <title>Projects - Paul Madu</title>
-        <meta name="description" content="Explore Paul Madu's fullstack development projects" />
+        <meta name="description" content="Explore Paul Madu's fullstack development projects including SempaiHQ (Web3 platform), Virginia Cakes e-commerce, DigiTec Learning Platform, and cryptocurrency trading demonstrations." />
       </Head>
 
       <div className="projects-container">

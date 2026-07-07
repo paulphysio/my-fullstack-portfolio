@@ -49,6 +49,16 @@ export default function Home() {
                 <p>
                   Web3 & Full‑Stack Engineer — Solana · Web3.js · React · Next.js · TypeScript · Node.js · Python/Django · PostgreSQL · AWS · Rust · Docker
                 </p>
+                <p className="engineering-note">
+                  Also: Petroleum Engineering graduate (FUTO, 2024) with experimental EOR research background
+                </p>
+              </div>
+
+              <div className="cv-download-section">
+                <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" className="cv-download-btn">
+                  <span className="btn-icon">📄</span>
+                  <span>Download CV</span>
+                </a>
               </div>
               
               <div className="intro-text">
@@ -88,10 +98,6 @@ export default function Home() {
                       <rect x="3" y="14" width="7" height="7"></rect>
                     </svg>
                   </div>
-                  <div className="card-status">
-                    <span className="status-dot"></span>
-                    <span className="status-text">ACTIVE</span>
-                  </div>
                 </div>
                 <h3 className="card-title">
                   <span className="title-bracket">[</span>
@@ -119,10 +125,6 @@ export default function Home() {
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                   </div>
-                  <div className="card-status">
-                    <span className="status-dot"></span>
-                    <span className="status-text">ONLINE</span>
-                  </div>
                 </div>
                 <h3 className="card-title">
                   <span className="title-bracket">[</span>
@@ -130,7 +132,7 @@ export default function Home() {
                   <span className="title-bracket">]</span>
                 </h3>
                 <p className="card-description">
-                  <span className="prompt-small">→</span> Self-taught developer journey from 2019 to leading Web3 development at SempaiHQ
+                  <span className="prompt-small">→</span> Petroleum Engineering graduate & Full-Stack Engineer with Web3 expertise
                 </p>
                 <div className="card-footer">
                   <span className="card-command">cat ./about.md</span>
@@ -152,10 +154,6 @@ export default function Home() {
                       <line x1="16" y1="17" x2="8" y2="17"></line>
                       <polyline points="10 9 9 9 8 9"></polyline>
                     </svg>
-                  </div>
-                  <div className="card-status">
-                    <span className="status-dot status-pulse"></span>
-                    <span className="status-text">UPDATED</span>
                   </div>
                 </div>
                 <h3 className="card-title">
@@ -183,10 +181,6 @@ export default function Home() {
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                       <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
-                  </div>
-                  <div className="card-status">
-                    <span className="status-dot"></span>
-                    <span className="status-text">READY</span>
                   </div>
                 </div>
                 <h3 className="card-title">
@@ -261,10 +255,6 @@ export default function Home() {
             <div className="stack-category">
               <h3>🔧 Backend</h3>
               <div className="stack-badges">
-                <div className="stack-badge-wrapper" onClick={() => handleStackClick('nextjs')}>
-                  <AsciiImage src="/ascii-art/nextjs.png" alt="Next.js" />
-                  <span className="stack-badge-label">Next.js</span>
-                </div>
                 <div className="stack-badge-wrapper" onClick={() => handleStackClick('nodejs')}>
                   <AsciiImage src="/ascii-art/nodejs.png" alt="Node.js" />
                   <span className="stack-badge-label">Node.js</span>
@@ -273,14 +263,6 @@ export default function Home() {
                   <AsciiImage src="/ascii-art/express.png" alt="Express" />
                   <span className="stack-badge-label">Express</span>
                 </div>
-                <div className="stack-badge-wrapper" onClick={() => handleStackClick('postgresql')}>
-                  <AsciiImage src="/ascii-art/postgresql.png" alt="PostgreSQL" />
-                  <span className="stack-badge-label">PostgreSQL</span>
-                </div>
-                <div className="stack-badge-wrapper" onClick={() => handleStackClick('mongodb')}>
-                  <AsciiImage src="/ascii-art/mongodb.png" alt="MongoDB" />
-                  <span className="stack-badge-label">MongoDB</span>
-                </div>
                 <div className="stack-badge-wrapper" onClick={() => handleStackClick('python')}>
                   <AsciiImage src="/ascii-art/python.png" alt="Python" />
                   <span className="stack-badge-label">Python</span>
@@ -288,6 +270,14 @@ export default function Home() {
                 <div className="stack-badge-wrapper" onClick={() => handleStackClick('django')}>
                   <AsciiImage src="/ascii-art/django.png" alt="Django" />
                   <span className="stack-badge-label">Django</span>
+                </div>
+                <div className="stack-badge-wrapper" onClick={() => handleStackClick('postgresql')}>
+                  <AsciiImage src="/ascii-art/postgresql.png" alt="PostgreSQL" />
+                  <span className="stack-badge-label">PostgreSQL</span>
+                </div>
+                <div className="stack-badge-wrapper" onClick={() => handleStackClick('mongodb')}>
+                  <AsciiImage src="/ascii-art/mongodb.png" alt="MongoDB" />
+                  <span className="stack-badge-label">MongoDB</span>
                 </div>
               </div>
             </div>

@@ -22,6 +22,18 @@ export default function About() {
       description: 'Leading the development of a fully decentralized anime platform on Solana blockchain. Building token-based content economy, in-app wallet systems, real-time chat, and on-chain gaming features.',
     },
     {
+      year: '2024',
+      title: 'NUPRC Intern & EOR Research',
+      company: 'Nigerian Upstream Petroleum Regulatory Commission',
+      description: 'Completed internship at NUPRC conducting experimental research on Enhanced Oil Recovery (EOR) techniques. Designed and executed thermal-chemical EOR experiments, analyzed reservoir performance data, and contributed to research on improving oil recovery efficiency in Nigerian reservoirs.',
+    },
+    {
+      year: '2020 - 2024',
+      title: 'Petroleum Engineering Degree',
+      company: 'Federal University of Technology, Owerri (FUTO)',
+      description: 'Graduated with Bachelor of Engineering in Petroleum Engineering with a 3.74 CGPA. Combined engineering studies with intensive self-directed software development, building a strong foundation in both technical disciplines.',
+    },
+    {
       year: '2022 - 2024',
       title: 'Tech Instructor & Freelance Developer',
       company: 'DigiTec Hub Institute',
@@ -45,7 +57,7 @@ export default function About() {
     <Layout>
       <Head>
         <title>About - Paul Madu</title>
-        <meta name="description" content="Learn about Paul Madu - Fullstack Developer" />
+        <meta name="description" content="About Paul Madu - Petroleum Engineering graduate (FUTO, 2024) and Full-Stack Engineer specializing in Web3, Solana blockchain, and modern web development with experimental EOR research background." />
       </Head>
 
       <div className="about-container">
@@ -58,11 +70,18 @@ export default function About() {
         <section className="bio-section">
           <TerminalWindow title="bio.md">
             <div className="bio-content">
+              <div className="cv-download-wrapper">
+                <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" className="cv-download-btn">
+                  <span className="btn-icon">📄</span>
+                  <span>Download CV</span>
+                </a>
+              </div>
               <p>
-                I'm Paul Madu, a self-taught Web3 developer and fullstack engineer currently leading development at 
-                <strong> SempaiHQ</strong>, where we're building a fully decentralized anime platform on Solana blockchain. 
-                My journey from teaching myself HTML and CSS in 2019 to architecting complex blockchain applications has been 
-                driven by an insatiable curiosity and passion for creating solutions that matter.
+                I'm Paul Madu, a Full-Stack Engineer and Petroleum Engineering graduate (FUTO, 2024) with a 3.74 CGPA. 
+                Currently leading Web3 development at <strong>SempaiHQ</strong>, where we're building a fully decentralized 
+                anime platform on Solana blockchain. My journey combines my engineering background with software development, 
+                from teaching myself HTML and CSS in 2019 to architecting complex blockchain applications, driven by an 
+                insatiable curiosity and passion for creating solutions that matter.
               </p>
               <p>
                 My coding journey began in 2019 when I wrote my first line of code. What started as curiosity quickly became 

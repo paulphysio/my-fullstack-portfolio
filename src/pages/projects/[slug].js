@@ -74,10 +74,17 @@ export default function ProjectDetail() {
                   </a>
                 )}
                 {project.github && (
-                  <a href={project.github} target="_blank" rel="noreferrer" className="action-btn action-btn-secondary">
-                    <span className="btn-icon">⚡</span>
-                    <span>View Source</span>
-                  </a>
+                  project.github.startsWith('http') ? (
+                    <a href={project.github} target="_blank" rel="noreferrer" className="action-btn action-btn-secondary">
+                      <span className="btn-icon">⚡</span>
+                      <span>View Source</span>
+                    </a>
+                  ) : (
+                    <div className="action-btn action-btn-secondary">
+                      <span className="btn-icon">⚡</span>
+                      <span>{project.github}</span>
+                    </div>
+                  )
                 )}
               </div>
             </div>

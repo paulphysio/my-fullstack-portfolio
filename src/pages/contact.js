@@ -70,7 +70,7 @@ export default function Contact() {
     <Layout>
       <Head>
         <title>Contact - Paul Madu</title>
-        <meta name="description" content="Get in touch with Paul Madu" />
+        <meta name="description" content="Contact Paul Madu - Petroleum Engineering graduate and Full-Stack Engineer open to remote developer roles, Masters research supervision, and freelance projects." />
       </Head>
 
       <div className="contact-container">
@@ -170,8 +170,8 @@ export default function Contact() {
                 
                 <div className="info-item">
                   <span className="info-label">Email:</span>
-                  <a href="mailto:obinnap350@gmail.com" className="info-link">
-                    obinnap350@gmail.com
+                  <a href="mailto:madupaul.20181131453@futo.edu.ng" className="info-link">
+                    madupaul.20181131453@futo.edu.ng
                   </a>
                 </div>
 
@@ -213,7 +213,7 @@ export default function Contact() {
 
                 <div className="info-note">
                   <p>
-                    Open to freelance opportunities, collaborations, and interesting projects.
+                    Currently open to: remote developer roles, Masters research supervision, and freelance projects.
                     Feel free to reach out!
                   </p>
                 </div>

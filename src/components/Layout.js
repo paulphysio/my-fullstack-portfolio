@@ -93,7 +93,7 @@ export default function Layout({ children }) {
       <footer className="main-footer">
         <div className="footer-content">
           <div className="footer-section">
-            <p>&copy; 2024 Paul Madu. Built with Next.js, React & Terminal vibes.</p>
+            <p>&copy; 2026 Paul Madu. Built with Next.js, React & Terminal vibes.</p>
           </div>
           <div className="footer-section">
             <a href="https://github.com/paulphysio" target="_blank" rel="noopener noreferrer">
@@ -105,7 +105,7 @@ export default function Layout({ children }) {
             <a href="https://x.com/physiodev_1" target="_blank" rel="noopener noreferrer">
               X
             </a>
-            <a href="mailto:obinnap350@gmail.com">Email</a>
+            <a href="mailto:madupaul.20181131453@futo.edu.ng">Email</a>
           </div>
         </div>
       </footer>

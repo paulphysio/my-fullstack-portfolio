@@ -17,7 +17,7 @@ export default function Blog() {
     <Layout>
       <Head>
         <title>Blog - Paul Madu</title>
-        <meta name="description" content="Technical blog by Paul Madu" />
+        <meta name="description" content="Technical blog by Paul Madu featuring articles on Solana development, Web3.js, blockchain technology, DeFi strategies, React Native mobile apps, and full-stack engineering with Next.js and modern frameworks." />
       </Head>
 
       <div className="blog-container">
