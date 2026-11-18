@@ -4,11 +4,38 @@ import { useState } from 'react';
 import Layout from '@/components/Layout';
 import TerminalWindow from '@/components/TerminalWindow';
 import { getAllProjects } from '@/lib/projects';
+import { usePageDrones, titleScene, DroneHeader, loadImage } from '@/components/drones/page';
+import { picture } from '@/components/drones/compose';
+
+const HEADER = {
+  eyebrow: '$ ls -la ./projects',
+  title: 'Projects',
+  sub: 'Decentralized apps, Web3 platforms and full-stack products — designed, built and shipped.',
+};
 
 export default function Projects() {
   const projects = getAllProjects();
   const [hoveredProject, setHoveredProject] = useState(null);
   const [imageErrors, setImageErrors] = useState({});
+  const years = projects.map((p) => p.year);
+  const meta = `${projects.length} projects · ${Math.min(...years)} — ${Math.max(...years)}`;
+
+  // Drones write the title; hovering a card paints that project's site
+  // across the night sky behind the grid.
+  const drones = usePageDrones(
+    async (ctx) => [{ key: 'title', elements: titleScene(ctx, { ...HEADER, meta }) }],
+    async (ctx) => {
+      const imgs = await Promise.all(projects.map((p) => loadImage(p.image)));
+      const budget = ctx.mobile ? 16000 : 52000;
+      const spacing = Math.max(2.4, Math.sqrt((ctx.W * ctx.H) / budget));
+      return projects.map((p, i) => ({
+        key: `shot:${p.slug}`,
+        elements: imgs[i]
+          ? [picture({ id: 'shot', slot: 'shot', img: imgs[i], x: 0, y: 0, w: ctx.W, h: ctx.H, fit: 'cover', alignTop: true, spacing, brightness: 0.2, order: 0.3 })]
+          : [],
+      }));
+    }
+  );
 
   const handleImageError = (slug) => {
     setImageErrors(prev => ({ ...prev, [slug]: true }));
@@ -18,29 +45,28 @@ export default function Projects() {
     <Layout>
       <Head>
         <title>Projects - Paul Madu</title>
-        <meta name="description" content="Explore Paul Madu's fullstack development projects including SempaiHQ (Web3 platform), Virginia Cakes e-commerce, DigiTec Learning Platform, VERTIKAL originals streetwear store, and Jeshfield Global corporate website." />
+        <meta name="description" content="Explore Paul Madu's fullstack development projects including VERTIKAL originals streetwear store, SempaiHQ (Web3 platform), ChatsUp live chat for websites, Virginia Cakes e-commerce, and Jeshfield Global corporate website." />
       </Head>
 
       <div className="projects-container">
-        <header className="page-header">
-          <h1 className="page-title">
-            <span className="prompt">$</span> ls -la ./projects
-          </h1>
-          <p className="page-description" data-reveal="blur" data-delay="0.2">
-            A collection of my fullstack projects showcasing modern web technologies
-          </p>
-        </header>
+        <DroneHeader {...HEADER} meta={meta} />
 
         <div className="projects-grid" data-stagger>
           {projects.map((project) => (
-            <Link 
-              key={project.slug} 
+            <Link
+              key={project.slug}
               href={`/projects/${project.slug}`}
               className="project-card"
               data-tilt
               data-cursor="View"
-              onMouseEnter={() => setHoveredProject(project.slug)}
-              onMouseLeave={() => setHoveredProject(null)}
+              onMouseEnter={() => {
+                setHoveredProject(project.slug);
+                drones.current.show(`shot:${project.slug}`);
+              }}
+              onMouseLeave={() => {
+                setHoveredProject(null);
+                drones.current.clear();
+              }}
             >
               <div className="project-image">
                 {!imageErrors[project.slug] ? (

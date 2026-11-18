@@ -1,7 +1,17 @@
+import { useEffect } from 'react';
 import Head from 'next/head';
 import Layout from '@/components/Layout';
 import TerminalWindow from '@/components/TerminalWindow';
 import Typewriter from '@/components/Typewriter';
+import { usePageDrones, titleScene, DroneHeader } from '@/components/drones/page';
+import { text, FONTS, C, fitSize } from '@/components/drones/compose';
+
+const HEADER = {
+  eyebrow: '$ cat about.txt',
+  title: 'About',
+  sub: 'Petroleum engineer by degree. Full-stack & Web3 engineer by obsession.',
+  meta: 'B.Eng FUTO 2024 · 3.74 CGPA · Web3 @ SempaiHQ',
+};
 
 export default function About() {
   const skills = {
@@ -53,6 +63,50 @@ export default function About() {
     },
   ];
 
+  // Drones write the title, then — while you read the timeline — draw the
+  // year of the milestone in view as a giant outline numeral in the sky.
+  const drones = usePageDrones(
+    async (ctx) => [
+      { key: 'title', elements: titleScene(ctx, HEADER) },
+      ...timeline.map((event, i) => {
+        const year = (event.year.match(/\d{4}/) || [event.year])[0];
+        const size = fitSize([year], (p) => FONTS.display(700, p), ctx.CW * (ctx.mobile ? 0.9 : 0.55), ctx.mobile ? 150 : 340);
+        const right = ctx.M + ctx.CW;
+        return {
+          key: `year:${i}`,
+          elements: [
+            text({ id: 'yr', slot: 'yr', x: right, y: ctx.H * 0.5 - size * 0.62, str: year, font: FONTS.display(700, size), color: C.cyan, align: 'right', stroke: Math.max(2, size * 0.012), lineHeight: size, spacing: ctx.mobile ? 1.4 : 1.7, brightness: 0.55, order: 0.2 }),
+          ],
+        };
+      }),
+    ],
+    null
+  );
+
+  // The milestone crossing the middle of the screen picks the year.
+  useEffect(() => {
+    const items = [...document.querySelectorAll('.timeline-item')];
+    const section = document.querySelector('.timeline-section');
+    if (!items.length || !section) return undefined;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) drones.current.show(`year:${items.indexOf(e.target)}`);
+        });
+      },
+      { rootMargin: '-45% 0px -45% 0px' }
+    );
+    items.forEach((el) => io.observe(el));
+    const out = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) drones.current.clear();
+    });
+    out.observe(section);
+    return () => {
+      io.disconnect();
+      out.disconnect();
+    };
+  }, [drones]);
+
   return (
     <Layout>
       <Head>
@@ -61,11 +115,7 @@ export default function About() {
       </Head>
 
       <div className="about-container">
-        <header className="page-header">
-          <h1 className="page-title">
-            <span className="prompt">$</span> cat about.txt
-          </h1>
-        </header>
+        <DroneHeader {...HEADER} />
 
         <section className="bio-section" data-reveal="scale">
           <TerminalWindow title="bio.md">

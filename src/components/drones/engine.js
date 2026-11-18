@@ -99,18 +99,28 @@ const FRAG = /* glsl */ `
 `;
 
 export class DroneEngine {
-  constructor(mount, { N, reduce, instant = false, provider, sky, onSettle }) {
+  /**
+   * One engine for the whole site (it survives page navigation).
+   *  - mode 'scroll': a sequence scrubbed by scroll (`target`, a float index).
+   *  - mode 'direct': timed flights to formations via `goTo(i)`.
+   * `setShow()` swaps in a page's formations, flying from whatever is on
+   * screen right now.
+   */
+  constructor(mount, { N, reduce, instant = false }) {
     this.instant = instant; // jump straight to formations (automated visual checks)
     this.N = N;
     this.reduce = reduce;
-    this.provider = provider;
-    this.sky = sky;
-    this.onSettle = onSettle;
+    this.provider = null;
+    this.sky = null;
+    this.onSettle = null;
+    this.mode = 'direct';
     this.target = 0;
     this.shown = 0;
-    this.available = 0; // formations ready
-    this.intro = { v: reduce || instant ? 1 : 0 };
-    this.seg = null;
+    this.available = 0;
+    this.current = null; // formation data on screen when idle (direct mode)
+    this.currentIndex = -1;
+    this.trans = null; // { A, B, toIndex, p: { v }, tween }
+    this.loaded = [null, null];
     this.settled = null;
     this.cache = new Map();
 
@@ -186,6 +196,7 @@ export class DroneEngine {
 
     this.resize();
     this.tick = this.tick.bind(this);
+    gsap.ticker.add(this.tick);
   }
 
   resize() {
@@ -200,29 +211,30 @@ export class DroneEngine {
     this.u.uView.value.set(W, H);
   }
 
-  /** Formations [0, n) can now be requested from the provider. */
+  /** Formations [0, n) of the current show can be requested. */
   setAvailable(n) {
     this.available = n;
   }
 
-  /** Throw away assembled formations (after a re-layout). */
-  invalidate() {
-    this.cache.clear();
-    this.seg = null;
-  }
-
   get(i) {
-    if (i < 0) return this.sky;
+    if (i < 0 || !this.provider) return this.sky;
     if (!this.cache.has(i)) {
-      if (this.cache.size > 5) this.cache.delete(this.cache.keys().next().value);
+      if (this.cache.size > 6) this.cache.delete(this.cache.keys().next().value);
       this.cache.set(i, this.provider(i));
     }
     return this.cache.get(i);
   }
 
-  load(from, to) {
-    const A = this.get(from);
-    const B = this.get(to);
+  /** What the viewer mostly sees right now (the start of a new flight). */
+  snapshot() {
+    if (this.trans) return this.trans.p.v > 0.5 ? this.trans.B : this.trans.A;
+    if (this.mode === 'scroll' && this.loaded[0]) return this.u.uMix.value > 0.5 ? this.loaded[1] : this.loaded[0];
+    return this.current || this.sky;
+  }
+
+  /** Upload a from/to pair (skipped when it is already on the GPU). */
+  load(A, B) {
+    if (this.loaded[0] === A && this.loaded[1] === B) return;
     const { a, N } = this;
     a.aFrom.array.set(A.pos);
     a.aColFrom.array.set(A.col);
@@ -240,7 +252,52 @@ export class DroneEngine {
     Object.values(a).forEach((v) => (v.needsUpdate = true));
     this.u.uPivotFrom.value.set(...A.pivot);
     this.u.uPivotTo.value.set(...B.pivot);
-    this.seg = `${from}>${to}`;
+    this.loaded = [A, B];
+  }
+
+  /** Fly from the current picture to formation `i` of the current show. */
+  flyTo(i, duration) {
+    const A = this.snapshot();
+    const B = this.get(i);
+    if (!A || !B) return;
+    if (this.trans) this.trans.tween.kill();
+    const p = { v: 0 };
+    const quick = this.instant || this.reduce;
+    const trans = { A, B, toIndex: i, p };
+    trans.tween = gsap.to(p, {
+      v: 1,
+      duration: quick ? 0.001 : duration,
+      ease: 'power1.inOut',
+      onComplete: () => {
+        this.current = B;
+        this.currentIndex = i;
+        if (this.mode === 'scroll') this.shown = i;
+        if (this.trans === trans) this.trans = null;
+      },
+    });
+    this.trans = trans;
+  }
+
+  /** Swap in a new show (a page). The flight starts from what is on screen. */
+  setShow({ provider, count, sky, mode = 'direct', start = 0, duration }) {
+    const first = !this.provider;
+    this.sky = sky;
+    if (!this.current && !this.loaded[0]) this.current = sky; // the very first show rises out of the night sky
+    this.provider = provider;
+    this.cache.clear();
+    this.available = count;
+    this.mode = mode;
+    this.target = start;
+    this.shown = start;
+    this.currentIndex = -1;
+    this.flyTo(start, duration ?? (first ? 3.2 : 2.2));
+  }
+
+  /** Direct mode: fly to formation i (no-op if already there or heading there). */
+  goTo(i, duration = 1.7) {
+    if (!this.provider || i >= this.available) return;
+    if (this.trans ? this.trans.toIndex === i : this.currentIndex === i) return;
+    this.flyTo(i, duration);
   }
 
   setHover(rect) {
@@ -248,43 +305,46 @@ export class DroneEngine {
     else this.u.uHover.value.set(rect.x - 6, rect.y - 6, rect.x + rect.w + 6, rect.y + rect.h + 6);
   }
 
-  start() {
-    gsap.ticker.add(this.tick);
-    if (!this.reduce) {
-      gsap.to(this.intro, { v: 1, duration: 3.2, ease: 'power2.inOut', delay: 0.15 });
-    }
-  }
-
   tick(time, deltaMs) {
     const dt = Math.min(deltaMs / 1000, 0.05);
     const lerp = (x, y, k) => x + (y - x) * (1 - Math.pow(1 - k, dt * 60));
-    const maxIdx = Math.max(0, this.available - 1);
-    const target = Math.min(this.target, maxIdx);
+    let settled = -1;
 
-    if (this.instant) this.shown = target;
-    else if (this.reduce) this.shown = Math.round(target);
-    else {
-      // Eased follow with a speed limit: a hard flick still plays as a graceful flight.
-      const step = (target - this.shown) * (1 - Math.pow(1 - 0.045, dt * 60));
-      const cap = 1.1 * dt;
-      this.shown += Math.max(-cap, Math.min(cap, step));
-    }
-
-    let from;
-    let to;
-    let mix;
-    if (this.intro.v < 1) {
-      from = -1;
-      to = 0;
-      mix = this.intro.v;
+    if (this.trans) {
+      // Timed flight: page swaps, direct-mode moves, the opening.
+      this.load(this.trans.A, this.trans.B);
+      this.u.uMix.value = this.trans.p.v;
+    } else if (this.mode === 'scroll' && this.provider) {
+      const maxIdx = Math.max(0, this.available - 1);
+      const target = Math.min(this.target, maxIdx);
+      if (this.instant) this.shown = target;
+      else if (this.reduce) this.shown = Math.round(target);
+      else {
+        // Eased follow with a speed limit: a hard flick still plays as a graceful flight.
+        const step = (target - this.shown) * (1 - Math.pow(1 - 0.045, dt * 60));
+        const cap = 1.1 * dt;
+        this.shown += Math.max(-cap, Math.min(cap, step));
+      }
+      const from = Math.min(Math.floor(this.shown), Math.max(0, maxIdx - 1));
+      const to = Math.min(from + 1, maxIdx);
+      this.load(this.get(from), this.get(to));
+      this.u.uMix.value = to === from ? 0 : Math.min(1, Math.max(0, this.shown - from));
+      const near = Math.round(this.shown);
+      if (Math.abs(this.shown - near) < 0.04 && Math.abs(target - near) < 0.2) settled = near;
     } else {
-      from = Math.min(Math.floor(this.shown), Math.max(0, maxIdx - 1));
-      to = Math.min(from + 1, maxIdx);
-      mix = to === from ? 0 : this.shown - from;
-      if (to === from) from = to;
+      // Direct mode, at rest.
+      const cur = this.current || this.sky;
+      if (cur) {
+        this.load(cur, cur);
+        this.u.uMix.value = 0;
+      }
+      settled = this.currentIndex;
     }
-    if (this.seg !== `${from}>${to}`) this.load(from, to);
-    this.u.uMix.value = Math.min(1, Math.max(0, mix));
+
+    if (settled !== this.settled) {
+      this.settled = settled;
+      this.onSettle?.(settled);
+    }
 
     const vel = Math.abs(window.__lenis?.velocity || 0);
     this.u.uTime.value = time;
@@ -296,20 +356,12 @@ export class DroneEngine {
     this.group.rotation.y = this.mouse.x * 0.035;
     this.group.rotation.x = this.mouse.y * 0.025;
 
-    // Report the formation the viewer is resting on (for hit-areas).
-    const near = Math.round(this.shown);
-    const settled = this.intro.v >= 0.95 && Math.abs(this.shown - near) < 0.04 && Math.abs(target - near) < 0.2 ? near : -1;
-    if (settled !== this.settled) {
-      this.settled = settled;
-      this.onSettle?.(settled);
-    }
-
-    this.renderer.render(this.scene, this.camera);
+    if (this.loaded[0]) this.renderer.render(this.scene, this.camera);
   }
 
   destroy() {
     gsap.ticker.remove(this.tick);
-    gsap.killTweensOf(this.intro);
+    this.trans?.tween.kill();
     window.removeEventListener('pointermove', this.onMove);
     document.removeEventListener('mouseleave', this.onLeave);
     this.geo.dispose();

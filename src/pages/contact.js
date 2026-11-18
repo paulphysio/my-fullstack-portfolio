@@ -2,8 +2,32 @@ import { useState } from 'react';
 import Head from 'next/head';
 import Layout from '@/components/Layout';
 import TerminalWindow from '@/components/TerminalWindow';
+import { usePageDrones, titleScene, DroneHeader } from '@/components/drones/page';
+
+const HEADER = {
+  eyebrow: '$ ./contact.sh',
+  title: 'Contact',
+  sub: "Let's connect and build something great together.",
+  meta: 'Remote roles · Freelance · Web3 builds',
+};
 
 export default function Contact() {
+  // Drones write the title — and celebrate a sent message.
+  const drones = usePageDrones(
+    async (ctx) => [
+      { key: 'title', elements: titleScene(ctx, HEADER) },
+      {
+        key: 'sent',
+        elements: titleScene(ctx, {
+          eyebrow: '$ ./contact.sh --status',
+          title: 'Message sent ✓',
+          sub: "Thanks for reaching out — I'll get back to you soon.",
+          meta: 'Delivered',
+        }),
+      },
+    ],
+    null
+  );
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -50,6 +74,11 @@ export default function Contact() {
           message: 'Message sent successfully! I\'ll get back to you soon.',
         });
         setFormData({ name: '', email: '', message: '', honeypot: '' });
+        // Glide to the top and let the drones confirm it.
+        if (window.__lenis) window.__lenis.scrollTo(0, { duration: 1.2 });
+        else window.scrollTo({ top: 0, behavior: 'smooth' });
+        drones.current.show('sent');
+        setTimeout(() => drones.current.clear(), 9000);
       } else {
         setStatus({
           type: 'error',
@@ -74,14 +103,7 @@ export default function Contact() {
       </Head>
 
       <div className="contact-container">
-        <header className="page-header">
-          <h1 className="page-title">
-            <span className="prompt">$</span> ./contact.sh
-          </h1>
-          <p className="page-description" data-reveal="blur" data-delay="0.2">
-            Let's connect and build something great together
-          </p>
-        </header>
+        <DroneHeader {...HEADER} />
 
         <div className="contact-content">
           <div className="contact-form-section" data-reveal="left">

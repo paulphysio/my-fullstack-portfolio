@@ -5,9 +5,13 @@ import Layout from '@/components/Layout';
 import TerminalWindow from '@/components/TerminalWindow';
 import AsciiImage from '@/components/AsciiImage';
 import { getProjectBySlug, getAllProjects } from '@/lib/projects';
+import { usePageDrones, DroneHeader } from '@/components/drones/page';
+import { headerFor, projectHero } from '@/components/drones/projectHero';
 
 export default function ProjectDetail({ project }) {
   const router = useRouter();
+
+  usePageDrones(async (ctx) => [{ key: 'title', elements: project ? await projectHero(ctx, project) : [] }], null, [project?.slug]);
 
   if (!project) {
     return (
@@ -32,9 +36,11 @@ export default function ProjectDetail({ project }) {
           ← Back to projects
         </Link>
 
+        <DroneHeader {...headerFor(project)} tall decorativeTitle />
+
         <header className="project-detail-header">
           <div className="project-title-section">
-            <h1 className="project-detail-title">{project.title}</h1>
+            <h1 className="project-detail-title drone-dup">{project.title}</h1>
             <div className="project-meta">
               <span className="project-status status-{project.status}">{project.status}</span>
               <span className="project-year">{project.year}</span>

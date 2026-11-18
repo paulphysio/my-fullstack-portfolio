@@ -1,3 +1,4 @@
+import { createStage } from './stage';
 import { FONTS, C, text, frame, button, tags, picture, points, group, shape, measure, fitSize, sampleElement, rgb } from './compose';
 
 /*
@@ -87,38 +88,14 @@ function galaxy(cx, cy, R, count, bright) {
   return out;
 }
 
-function makeSky(N, W, H) {
-  const pos = new Float32Array(N * 3);
-  const col = new Float32Array(N * 3);
-  const size = new Float32Array(N);
-  const delay = new Float32Array(N);
-  const spin = new Float32Array(N);
-  const tints = [rgb('#9fb4d8'), rgb(C.cyan), rgb(C.violet), rgb(C.green)];
-  for (let i = 0; i < N; i++) {
-    pos[i * 3] = (Math.random() * 1.3 - 0.15) * W;
-    pos[i * 3 + 1] = (Math.random() * 1.3 - 0.15) * H;
-    pos[i * 3 + 2] = -250 - Math.random() * 1600;
-    const t = Math.random();
-    const tint = tints[t < 0.72 ? 0 : t < 0.86 ? 1 : t < 0.95 ? 2 : 3];
-    // Most resting drones fade into the dark; a few become stars.
-    const star = Math.random() < 0.12;
-    const b = star ? 0.18 + Math.pow(Math.random(), 2) * 0.45 : 0.012 + Math.random() * 0.03;
-    col.set(tint.map((v) => v * b), i * 3);
-    size[i] = 2.4 + Math.random() * 2.6;
-    delay[i] = Math.random();
-  }
-  return { pos, col, size, delay, spin, pivot: [W / 2, H / 2, 0] };
-}
-
 /* ------------------------------------------------------------------ */
 
 export function createShow({ W, H, N, mobile, data }) {
   const M = mobile ? 22 : Math.max(72, (W - 1180) / 2);
   const CW = W - 2 * M;
   const TOP = mobile ? 92 : 112;
-  const sky = makeSky(N, W, H);
-  const formations = [];
-  let used = 0; // drones reserved so far (global slots)
+  const stage = createStage({ W, H, N });
+  const { sky, formations, compile, assemble } = stage;
 
   const label = (n, title) =>
     text({ id: 'label', slot: 'label', x: M, y: TOP, str: `${n} — ${title.toUpperCase()}`, font: FONTS.mono(600, mobile ? 11 : 12), color: C.green, letterSpacing: 3, order: 0, spacing: 1.2 });
@@ -171,91 +148,17 @@ export function createShow({ W, H, N, mobile, data }) {
     );
     rail.cap = Math.max(...rail.active.map((a) => a.length / 7));
     rail.baseCount = rail.base.length / 7;
-    used = rail.baseCount + rail.cap;
+    stage.st.used = rail.baseCount + rail.cap;
+    stage.st.globalPut = (f, put) => {
+      put(0, rail.baseCount, rail.base, 0.1, 0);
+      put(rail.baseCount, rail.cap, rail.active[f.scene], 0.9, 0);
+    };
   }
   const railHotspots = mobile
     ? []
     : SCENES.map((s, i) => ({ x: railX - 12, y: railY(i) - 12, w: 24, h: 24, label: `Go to ${s.name}`, scene: s.key }));
 
-  /* ---------- compile a scene: sample, size slots, register formations ---------- */
-  function compile(sceneIndex, steps) {
-    const avail = N - used;
-    let scale = 1;
-    let sampled;
-    let caps;
-    for (let attempt = 0; attempt < 4; attempt++) {
-      const cache = new Map();
-      caps = new Map();
-      sampled = steps.map((st) =>
-        st.elements.map((el) => {
-          const key = el.id;
-          if (!cache.has(key)) cache.set(key, sampleElement(el, scale));
-          const d = cache.get(key);
-          caps.set(el.slot, Math.max(caps.get(el.slot) || 0, d.length / 7));
-          return { el, d };
-        })
-      );
-      const total = [...caps.values()].reduce((s, v) => s + v, 0);
-      if (total <= avail) break;
-      scale *= Math.sqrt(total / avail) * 1.03;
-    }
-    const starts = new Map();
-    let cursor = used;
-    caps.forEach((cap, slot) => {
-      starts.set(slot, cursor);
-      cursor += cap;
-    });
-    steps.forEach((st, s) => {
-      const pivotEl = st.elements.find((e) => e.spin);
-      formations.push({
-        scene: sceneIndex,
-        step: s,
-        weight: st.weight ?? 1,
-        hotspots: [...(st.hotspots || []), ...railHotspots],
-        pivot: pivotEl ? pivotEl.pivot : [W / 2, H / 2, 0],
-        parts: sampled[s].map(({ el, d }) => ({
-          start: starts.get(el.slot),
-          cap: caps.get(el.slot),
-          d,
-          order: el.order ?? 0.5,
-          spin: el.spin ? 1 : 0,
-        })),
-      });
-    });
-  }
-
-  /* ---------- assemble formation i into GPU-ready arrays ---------- */
-  function assemble(i) {
-    const f = formations[i];
-    const pos = sky.pos.slice();
-    const col = sky.col.slice();
-    const size = sky.size.slice();
-    const delay = sky.delay.slice();
-    const spin = new Float32Array(N);
-    const put = (start, cap, d, order, sp) => {
-      const n = Math.min(cap, d.length / 7);
-      for (let k = 0; k < n; k++) {
-        const o = k * 7;
-        const j = start + k;
-        pos[j * 3] = d[o];
-        pos[j * 3 + 1] = d[o + 1];
-        pos[j * 3 + 2] = d[o + 2];
-        col[j * 3] = d[o + 3];
-        col[j * 3 + 1] = d[o + 4];
-        col[j * 3 + 2] = d[o + 5];
-        size[j] = d[o + 6];
-        // Cue: element order, then a left→right sweep inside the element.
-        delay[j] = Math.min(1, order * 0.72 + (d[o] / W) * 0.28);
-        spin[j] = sp;
-      }
-    };
-    if (rail.base) {
-      put(0, rail.baseCount, rail.base, 0.1, 0);
-      put(rail.baseCount, rail.cap, rail.active[f.scene], 0.9, 0);
-    }
-    f.parts.forEach((p) => put(p.start, p.cap, p.d, p.order, p.spin));
-    return { pos, col, size, delay, spin, pivot: f.pivot };
-  }
+  stage.st.extraHotspots = railHotspots;
 
   /* ================================================================== */
   /* SCENES                                                             */

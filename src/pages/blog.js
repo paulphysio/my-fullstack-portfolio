@@ -4,10 +4,19 @@ import { useState } from 'react';
 import Layout from '@/components/Layout';
 import TerminalWindow from '@/components/TerminalWindow';
 import { getAllPosts, getAllCategories, formatDate } from '@/lib/blog';
+import { usePageDrones, titleScene, DroneHeader } from '@/components/drones/page';
+
+const HEADER = {
+  eyebrow: '$ cat blog/*.md',
+  title: 'Blog',
+  sub: 'Technical insights on Web3, Solana, blockchain, and full-stack development.',
+};
 
 export default function Blog() {
   const allPosts = getAllPosts();
   const categories = getAllCategories();
+  const meta = `${allPosts.length} posts · ${categories.length} topics`;
+  usePageDrones(async (ctx) => [{ key: 'title', elements: titleScene(ctx, { ...HEADER, meta }) }], null);
   const [selectedCategory, setSelectedCategory] = useState('all');
   
   const filteredPosts = selectedCategory === 'all' 
@@ -21,14 +30,7 @@ export default function Blog() {
       </Head>
 
       <div className="blog-container">
-        <header className="page-header">
-          <h1 className="page-title">
-            <span className="prompt">$</span> cat blog/*.md
-          </h1>
-          <p className="page-description" data-reveal="blur" data-delay="0.2">
-            Technical insights on Web3, Solana, blockchain, and full-stack development
-          </p>
-        </header>
+        <DroneHeader {...HEADER} meta={meta} />
 
         {/* Category Filter */}
         <div className="blog-filters" data-reveal>

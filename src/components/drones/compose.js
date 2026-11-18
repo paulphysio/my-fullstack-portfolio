@@ -47,13 +47,13 @@ export function fitSize(lines, fontAt, maxWidth, cap) {
   return Math.min(cap, (maxWidth / widest) * 100);
 }
 
-export function wrap(text, font, maxWidth) {
+export function wrap(text, font, maxWidth, letterSpacing = 0) {
   const words = text.split(' ');
   const lines = [];
   let line = '';
   words.forEach((w) => {
     const test = line ? `${line} ${w}` : w;
-    if (line && measure(font, test) > maxWidth) {
+    if (line && measure(font, test, letterSpacing) > maxWidth) {
       lines.push(line);
       line = w;
     } else line = test;
@@ -95,7 +95,7 @@ export function text({
   // Small type needs a finer lattice to stay legible.
   spacing = Math.min(spacing, Math.max(0.82, px / 13.5));
   const lh = lineHeight || px * 1.3;
-  const lines = runs ? [runs] : wrap(str, font, maxWidth).slice(0, maxLines);
+  const lines = runs ? [runs] : wrap(str, font, maxWidth, letterSpacing).slice(0, maxLines);
   const widths = lines.map((l) =>
     Array.isArray(l) ? l.reduce((s, r) => s + measure(font, r.t, letterSpacing), 0) : measure(font, l, letterSpacing)
   );
@@ -279,7 +279,7 @@ export function tags({ id, slot, x, y, items, maxWidth, order = 0.7, color = C.c
 }
 
 /** Image fitted into a box. mask: 'none' keeps every pixel, 'lum' keeps bright ones. */
-export function picture({ id, slot, img, x, y, w, h, fit = 'contain', mask = 'none', spacing = 2.6, order = 0.4, radius = 0, alignTop = false }) {
+export function picture({ id, slot, img, x, y, w, h, fit = 'contain', mask = 'none', spacing = 2.6, order = 0.4, radius = 0, alignTop = false, brightness = 1 }) {
   const ar = img.naturalWidth / img.naturalHeight;
   let dw = w;
   let dh = w / ar;
@@ -294,6 +294,7 @@ export function picture({ id, slot, img, x, y, w, h, fit = 'contain', mask = 'no
     slot,
     order,
     spacing,
+    brightness,
     bbox: fit === 'cover' ? { x, y, w, h } : { x: dx, y: dy, w: dw, h: dh },
     paint(ctx) {
       ctx.save();

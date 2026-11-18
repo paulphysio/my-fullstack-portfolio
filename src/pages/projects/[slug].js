@@ -5,6 +5,8 @@ import { useState } from 'react';
 import Layout from '@/components/Layout';
 import TerminalWindow from '@/components/TerminalWindow';
 import { getProjectBySlug } from '@/lib/projects';
+import { usePageDrones, DroneHeader } from '@/components/drones/page';
+import { headerFor, projectHero } from '@/components/drones/projectHero';
 
 export default function ProjectDetail() {
   const router = useRouter();
@@ -12,6 +14,9 @@ export default function ProjectDetail() {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const project = typeof slug === 'string' ? getProjectBySlug(slug) : null;
+
+  // Drones: title + the live site painted in a browser frame.
+  usePageDrones(async (ctx) => [{ key: 'title', elements: project ? await projectHero(ctx, project) : [] }], null, [project?.slug]);
 
   if (!project) {
     return (
@@ -46,6 +51,8 @@ export default function ProjectDetail() {
           </Link>
         </div>
 
+        <DroneHeader {...headerFor(project)} tall decorativeTitle />
+
         {/* Hero Section */}
         <section className="project-hero-section">
           <TerminalWindow title={`${project.slug}/config.json`}>
@@ -62,7 +69,7 @@ export default function ProjectDetail() {
                 </div>
               </div>
 
-              <h1 className="project-hero-title">{project.title}</h1>
+              <h1 className="project-hero-title drone-dup">{project.title}</h1>
               
               <p className="project-hero-desc">{project.description}</p>
 

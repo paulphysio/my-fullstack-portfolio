@@ -6,6 +6,8 @@ import useVisitorNotification from '@/lib/useVisitorNotification';
 import SmoothScroll from '@/components/motion/SmoothScroll';
 import Cursor from '@/components/motion/Cursor';
 
+import DroneProvider from '@/components/drones/DroneProvider';
+
 export default function App({ Component, pageProps }) {
   // Track visitor and send email notifications
   useVisitorNotification();
@@ -13,7 +15,9 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <SmoothScroll />
-      <Component {...pageProps} />
+      <DroneProvider>
+        <Component {...pageProps} />
+      </DroneProvider>
       <Cursor />
     </>
   );

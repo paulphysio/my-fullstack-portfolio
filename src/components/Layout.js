@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CommandPalette from './CommandPalette';
-import PageLoader from './PageLoader';
 import MotionLayer from './motion/MotionLayer';
 
 export default function Layout({ children, immersive = false }) {
@@ -117,7 +116,6 @@ export default function Layout({ children, immersive = false }) {
       </footer>
       )}
 
-      <PageLoader />
       <MotionLayer scope={rootRef} />
 
       <CommandPalette 

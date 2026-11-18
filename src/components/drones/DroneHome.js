@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Snap from 'lenis/snap';
-import { DroneEngine } from './engine';
 import { createShow, plannedWeights, sceneStarts } from './show';
-import { prefersReducedMotion, isTouch } from '@/lib/gsap';
+import { useDrones, fontsReady } from './DroneProvider';
+import { loadImage } from './page';
+import { prefersReducedMotion } from '@/lib/gsap';
 
 /*
- * The home page as a drone show. The canvas draws everything; this component
+ * The home page as a drone show, played on the site-wide fleet. This component
  *  - builds the show (fonts → hero → remaining scenes as images arrive),
  *  - maps scroll position → formation index (with resting plateaus + snap),
  *  - lays invisible, real links over drone-drawn buttons and cards,
@@ -18,38 +19,13 @@ const smoothstep = (a, b, x) => {
   return t * t * (3 - 2 * t);
 };
 
-const loadImage = (src) =>
-  new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => resolve(null);
-    img.src = src;
-  });
-
-async function fontsReady() {
-  if (!document.fonts?.load) return;
-  const faces = [
-    '700 100px "Space Grotesk"',
-    '600 100px "Space Grotesk"',
-    '500 40px "Space Grotesk"',
-    '400 20px "Space Grotesk"',
-    '400 16px "JetBrains Mono"',
-    '500 16px "JetBrains Mono"',
-    '600 16px "JetBrains Mono"',
-  ];
-  await Promise.race([Promise.all(faces.map((f) => document.fonts.load(f))), new Promise((r) => setTimeout(r, 2500))]);
-}
-
 export default function DroneHome({ data, children }) {
-  const stageRef = useRef(null);
+  const { engine, failed, claim } = useDrones();
   const spacerRef = useRef(null);
-  const engineRef = useRef(null);
   const showRef = useRef(null);
   const planRef = useRef({ starts: [], total: 0 });
   const [active, setActive] = useState(-1);
-  const [failed, setFailed] = useState(false);
   const [layoutKey, setLayoutKey] = useState(0);
-  const firstRun = useRef(true);
 
   const P = data.projects.length;
   const L = data.logos.length;
@@ -63,42 +39,33 @@ export default function DroneHome({ data, children }) {
   };
   const goScene = (key) => scrollToFormation(sceneStarts(P, L)[key] ?? 0);
 
+  // The page height must exist before the fleet is ready (scroll restoration).
   useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return undefined;
+    const H = window.innerHeight;
+    const mobile = window.innerWidth < 760;
+    const unit = H * (mobile ? 1.15 : 1.3);
+    const starts = [];
+    let acc = 0;
+    plannedWeights(P, L).forEach((w) => {
+      starts.push(acc);
+      acc += w * unit;
+    });
+    const last = starts[starts.length - 1];
+    planRef.current = { starts, total: last, unit };
+    window.__dronePlan = starts; // handy for debugging / automated visual checks
+    spacerRef.current.style.height = `${last + H}px`;
+  }, [P, L, layoutKey]);
+
+  useEffect(() => {
+    if (!engine) return undefined;
+    claim();
     let disposed = false;
     const W = window.innerWidth;
     const H = window.innerHeight;
     const mobile = W < 760;
     const reduce = prefersReducedMotion();
-    const instant = new URLSearchParams(window.location.search).has('instant');
-    const N = mobile ? 30000 : 76000;
-
-    /* plan the scroll before anything is built */
-    const weights = plannedWeights(P, L);
-    const unit = H * (mobile ? 1.15 : 1.3);
-    const starts = [];
-    let acc = 0;
-    weights.forEach((w) => {
-      starts.push(acc);
-      acc += w * unit;
-    });
-    const last = starts[starts.length - 1];
-    planRef.current = { starts, total: last };
-    window.__dronePlan = starts; // handy for debugging / automated visual checks
-    spacerRef.current.style.height = `${last + H}px`;
-
-    let engine;
-    try {
-      engine = new DroneEngine(stage, { N, reduce, instant, provider: (i) => showRef.current.assemble(i), onSettle: setActive });
-    } catch {
-      setFailed(true);
-      return undefined;
-    }
-    engineRef.current = engine;
-    if (!firstRun.current) engine.intro.v = 1; // re-layout: no second intro
-    firstRun.current = false;
-    if (isTouch()) engine.u.uRepel.value = 0;
+    const { starts, unit } = planRef.current;
+    engine.onSettle = setActive;
 
     const onScroll = () => {
       const y = window.scrollY;
@@ -130,19 +97,18 @@ export default function DroneHome({ data, children }) {
       const images = {};
       const want = [...data.projects.map((p) => p.image), ...data.logos.map((l) => l.image)];
       const loads = Object.fromEntries(want.map((src) => [src, loadImage(src).then((img) => (images[src] = img))]));
-      const show = createShow({ W, H, N, mobile, data: { ...data, images } });
+      const show = createShow({ W, H, N: engine.N, mobile, data: { ...data, images } });
       showRef.current = show;
-      engine.sky = show.sky;
       for (let b = 0; b < show.builders.length; b++) {
         if (b === 4) await Promise.all(data.projects.map((p) => loads[p.image]));
         if (b === 5) await Promise.all(data.logos.map((l) => loads[l.image]));
         if (disposed) return;
         show.builders[b]();
-        engine.setAvailable(show.formations.length);
         if (b === 0) {
-          engine.start();
           onScroll();
-        }
+          // Fly in from wherever the drones are (night sky, or the last page).
+          engine.setShow({ provider: show.assemble, count: show.formations.length, sky: show.sky, mode: 'scroll', start: 0 });
+        } else engine.setAvailable(show.formations.length);
         await new Promise((r) => setTimeout(r, 0)); // keep the main thread breathing
       }
     })();
@@ -155,7 +121,6 @@ export default function DroneHome({ data, children }) {
         const dw = Math.abs(window.innerWidth - W);
         const dh = Math.abs(window.innerHeight - H);
         if (dw > 40 || (!mobile && dh > 120)) setLayoutKey((k) => k + 1);
-        else engine.resize();
       }, 300);
     };
     window.addEventListener('resize', onResize);
@@ -166,19 +131,18 @@ export default function DroneHome({ data, children }) {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
       snap?.destroy?.();
-      engine.destroy();
-      engineRef.current = null;
+      if (engine.onSettle === setActive) engine.onSettle = null;
+      engine.setHover(null);
       setActive(-1);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [layoutKey]);
+  }, [engine, layoutKey]);
 
   const hotspots = active >= 0 ? showRef.current?.formations[active]?.hotspots || [] : [];
-  const hover = (h) => engineRef.current?.setHover(h);
+  const hover = (h) => engine?.setHover(h);
 
   return (
     <>
-      <div ref={stageRef} className="drone-stage" aria-hidden="true" />
       <div ref={spacerRef} className="drone-spacer" />
 
       <nav className="drone-hotspots" aria-label="Home page actions">

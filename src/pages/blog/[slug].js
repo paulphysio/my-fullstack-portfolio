@@ -4,13 +4,27 @@ import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
 import TerminalWindow from '@/components/TerminalWindow';
 import { getPostBySlug, getAllPosts, formatDate, getRecentPosts } from '@/lib/blog';
+import { usePageDrones, titleScene, DroneHeader } from '@/components/drones/page';
+
+const postHeader = (post) => ({
+  eyebrow: `$ cat ./blog/${post.slug}.md`,
+  title: post.title,
+  meta: `${formatDate(post.date)} · ${post.readTime} · ${post.category}`,
+});
 
 export default function BlogPost() {
   const router = useRouter();
   const { slug } = router.query;
-  
+
   const post = getPostBySlug(slug);
   const recentPosts = getRecentPosts(3).filter(p => p.slug !== slug);
+
+  // Drones write the post title, then step back into the sky while you read.
+  usePageDrones(
+    async (ctx) => [{ key: 'title', elements: post ? titleScene(ctx, { ...postHeader(post), longTitle: true, maxWidth: 980 }) : [] }],
+    null,
+    [post?.slug]
+  );
 
   if (!post) {
     return (
@@ -50,6 +64,8 @@ export default function BlogPost() {
           </Link>
         </div>
 
+        <DroneHeader {...postHeader(post)} decorativeTitle />
+
         {/* Post Header */}
         <header className="blog-post-header-section">
           <TerminalWindow title={`${post.slug}.md`}>
@@ -66,7 +82,7 @@ export default function BlogPost() {
                 )}
               </div>
 
-              <h1 className="post-title">{post.title}</h1>
+              <h1 className="post-title drone-dup">{post.title}</h1>
 
               <div className="post-meta-bottom">
                 <div className="author-info">
