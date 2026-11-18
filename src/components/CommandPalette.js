@@ -91,7 +91,7 @@ export default function CommandPalette({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="command-palette-overlay" onClick={onClose}>
+    <div className="command-palette-overlay" onClick={onClose} data-lenis-prevent>
       <div 
         className="command-palette"
         onClick={(e) => e.stopPropagation()}

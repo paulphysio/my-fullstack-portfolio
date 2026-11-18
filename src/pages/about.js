@@ -67,44 +67,44 @@ export default function About() {
           </h1>
         </header>
 
-        <section className="bio-section">
+        <section className="bio-section" data-reveal="scale">
           <TerminalWindow title="bio.md">
             <div className="bio-content">
               <div className="cv-download-wrapper">
-                <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" className="cv-download-btn">
+                <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" className="cv-download-btn" data-magnetic>
                   <span className="btn-icon">📄</span>
                   <span>Download CV</span>
                 </a>
               </div>
-              <p>
+              <p data-lines>
                 I'm Paul Madu, a Full-Stack Engineer and Petroleum Engineering graduate (FUTO, 2024) with a 3.74 CGPA. 
                 Currently leading Web3 development at <strong>SempaiHQ</strong>, where we're building a fully decentralized 
                 anime platform on Solana blockchain. My journey combines my engineering background with software development, 
                 from teaching myself HTML and CSS in 2019 to architecting complex blockchain applications, driven by an 
                 insatiable curiosity and passion for creating solutions that matter.
               </p>
-              <p>
+              <p data-lines>
                 My coding journey began in 2019 when I wrote my first line of code. What started as curiosity quickly became 
                 an obsession. I dove deep into JavaScript, React, and Node.js, building projects day and night. Within two years, 
                 I was freelancing full-time, delivering custom web applications for clients worldwide. My stack expanded to include 
                 Python, Django, PostgreSQL, and modern DevOps practices. Each project taught me not just how to code, but how to 
                 solve real business problems with technology.
               </p>
-              <p>
+              <p data-lines>
                 From 2022 to 2024, I balanced two passions: teaching and building. At <strong>DigiTec Hub Institute</strong>, 
                 I shared my knowledge by teaching comprehensive tech courses—from computer fundamentals to advanced web development, 
                 data analysis, and forex trading. Teaching others reinforced my own understanding and kept me at the cutting edge. 
                 Simultaneously, I continued freelancing, building e-commerce platforms like Virginia Cakes, learning management 
                 systems, and exploring the emerging Web3 space.
               </p>
-              <p>
+              <p data-lines>
                 Today, at <strong>SempaiHQ</strong>, I'm combining everything I've learned to build the future of content creation. 
                 I develop Solana programs using Anchor Framework and integrate them seamlessly with Web3.js, design token economics, 
                 build React Native mobile apps, and create seamless Web3 experiences. From in-app Solana wallet creation using Web3.js 
                 to on-chain gaming (Kaito Adventure), real-time chat systems, and creator monetization—I'm pushing the boundaries of 
                 what's possible in decentralized applications.
               </p>
-              <p>
+              <p data-lines>
                 I believe in building with purpose, writing clean and secure code, and empowering users through decentralization. 
                 Whether it's teaching the next generation of developers, building production-ready applications, or innovating in 
                 the Web3 space—I'm driven by impact, not just code.
@@ -117,13 +117,13 @@ export default function About() {
           <h2 className="section-title">
             <span className="prompt">$</span> ls -R ./skills
           </h2>
-          <div className="skills-grid">
+          <div className="skills-grid" data-stagger>
             {Object.entries(skills).map(([category, items]) => (
-              <div key={category} className="skill-category">
+              <div key={category} className="skill-category" data-tilt>
                 <h3 className="skill-category-title">
                   <span className="folder-icon">📁</span> {category}
                 </h3>
-                <div className="skill-items">
+                <div className="skill-items" data-stagger>
                   {items.map((skill) => (
                     <div key={skill} className="skill-item">
                       <span className="skill-bullet">▸</span>
@@ -140,9 +140,10 @@ export default function About() {
           <h2 className="section-title">
             <span className="prompt">$</span> git log --oneline --graph
           </h2>
-          <div className="timeline">
+          <div className="timeline has-beam">
+            <span className="timeline-beam" data-draw aria-hidden="true" />
             {timeline.map((event, index) => (
-              <div key={index} className="timeline-item">
+              <div key={index} className="timeline-item" data-reveal={index % 2 ? 'right' : 'left'}>
                 <div className="timeline-marker">
                   <span className="timeline-year">{event.year}</span>
                 </div>
@@ -156,7 +157,7 @@ export default function About() {
           </div>
         </section>
 
-        <section className="contact-cta">
+        <section className="contact-cta" data-reveal="scale">
           <TerminalWindow title="contact-invitation" showControls={false}>
             <Typewriter
               text={[

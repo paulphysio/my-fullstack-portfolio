@@ -7,6 +7,12 @@ export default function Document() {
         <meta charSet="utf-8" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="theme-color" content="#0a0e27" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
         <meta
           name="description"
           content="Paul Madu - Fullstack Developer Portfolio. Expert in React, Next.js, Python, Django, Node.js, and modern web technologies."

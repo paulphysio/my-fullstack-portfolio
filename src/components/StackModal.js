@@ -34,7 +34,7 @@ export default function StackModal({ stack, onClose }) {
   if (!stack) return null;
 
   return (
-    <div className="stack-modal-overlay" onClick={onClose}>
+    <div className="stack-modal-overlay" onClick={onClose} data-lenis-prevent>
       <div className="stack-modal" onClick={(e) => e.stopPropagation()}>
         <div className="stack-modal-header">
           <div className="stack-modal-controls">

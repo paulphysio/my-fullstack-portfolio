@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CommandPalette from './CommandPalette';
 import PageLoader from './PageLoader';
+import MotionLayer from './motion/MotionLayer';
 
-export default function Layout({ children }) {
+export default function Layout({ children, immersive = false }) {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState('dark');
   const router = useRouter();
+  const rootRef = useRef(null);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -41,10 +43,13 @@ export default function Layout({ children }) {
   ];
 
   return (
-    <div className={`app-container theme-${theme}`}>
+    <div ref={rootRef} className={`app-container theme-${theme}${immersive ? " is-immersive" : ""}`}>
+      <div className="scroll-progress" aria-hidden="true">
+        <div className="scroll-progress-bar" />
+      </div>
       <header className="main-header">
         <div className="header-content">
-          <Link href="/" className="logo">
+          <Link href="/" className="logo" data-magnetic="0.4">
             <span className="logo-bracket">{'['}</span>
             <span className="logo-text">PM</span>
             <span className="logo-bracket">{']'}</span>
@@ -90,6 +95,7 @@ export default function Layout({ children }) {
         {children}
       </main>
 
+      {!immersive && (
       <footer className="main-footer">
         <div className="footer-content">
           <div className="footer-section">
@@ -109,8 +115,10 @@ export default function Layout({ children }) {
           </div>
         </div>
       </footer>
+      )}
 
       <PageLoader />
+      <MotionLayer scope={rootRef} />
 
       <CommandPalette 
         isOpen={paletteOpen} 

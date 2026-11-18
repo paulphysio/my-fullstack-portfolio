@@ -26,17 +26,19 @@ export default function Projects() {
           <h1 className="page-title">
             <span className="prompt">$</span> ls -la ./projects
           </h1>
-          <p className="page-description">
+          <p className="page-description" data-reveal="blur" data-delay="0.2">
             A collection of my fullstack projects showcasing modern web technologies
           </p>
         </header>
 
-        <div className="projects-grid">
+        <div className="projects-grid" data-stagger>
           {projects.map((project) => (
             <Link 
               key={project.slug} 
               href={`/projects/${project.slug}`}
               className="project-card"
+              data-tilt
+              data-cursor="View"
               onMouseEnter={() => setHoveredProject(project.slug)}
               onMouseLeave={() => setHoveredProject(null)}
             >

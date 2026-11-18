@@ -78,13 +78,13 @@ export default function Contact() {
           <h1 className="page-title">
             <span className="prompt">$</span> ./contact.sh
           </h1>
-          <p className="page-description">
+          <p className="page-description" data-reveal="blur" data-delay="0.2">
             Let's connect and build something great together
           </p>
         </header>
 
         <div className="contact-content">
-          <div className="contact-form-section">
+          <div className="contact-form-section" data-reveal="left">
             <TerminalWindow title="contact-form">
               <form onSubmit={handleSubmit} className="contact-form">
                 {/* Honeypot field - hidden from users */}
@@ -163,7 +163,7 @@ export default function Contact() {
             </TerminalWindow>
           </div>
 
-          <div className="contact-info-section">
+          <div className="contact-info-section" data-reveal="right" data-delay="0.15">
             <TerminalWindow title="contact-info.txt" showControls={false}>
               <div className="contact-info">
                 <h3 className="info-title">Connect With Me</h3>

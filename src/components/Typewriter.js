@@ -8,6 +8,7 @@ export default function Typewriter({
   cursorChar = '█',
   humanize = true,
   onComplete,
+  startOnView = false,
   className = '',
 }) {
   const [displayedText, setDisplayedText] = useState('');
@@ -15,6 +16,27 @@ export default function Typewriter({
   const [showCursor, setShowCursor] = useState(true);
   const [lineIndex, setLineIndex] = useState(0);
   const timeoutRef = useRef(null);
+  const rootRef = useRef(null);
+  const [active, setActive] = useState(!startOnView);
+
+  // Optionally wait until the typewriter scrolls into view before typing.
+  useEffect(() => {
+    if (active || !rootRef.current || typeof IntersectionObserver === 'undefined') {
+      if (!active) setActive(true);
+      return undefined;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActive(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    io.observe(rootRef.current);
+    return () => io.disconnect();
+  }, [active]);
 
   const textArray = Array.isArray(text) ? text : [text];
   const fullText = textArray.join('\n');
@@ -28,6 +50,7 @@ export default function Typewriter({
   }, []);
 
   useEffect(() => {
+    if (!active) return undefined;
     if (currentIndex < fullText.length) {
       const char = fullText[currentIndex];
       const isNewLine = char === '\n';
@@ -65,10 +88,11 @@ export default function Typewriter({
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [currentIndex, fullText, speed, pauseAfterLine, loop, humanize, onComplete]);
+  }, [active, currentIndex, fullText, speed, pauseAfterLine, loop, humanize, onComplete]);
 
   return (
     <div
+      ref={rootRef}
       className={`typewriter ${className}`}
       role="status"
       aria-live="polite"

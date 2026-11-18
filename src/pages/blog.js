@@ -25,13 +25,13 @@ export default function Blog() {
           <h1 className="page-title">
             <span className="prompt">$</span> cat blog/*.md
           </h1>
-          <p className="page-description">
+          <p className="page-description" data-reveal="blur" data-delay="0.2">
             Technical insights on Web3, Solana, blockchain, and full-stack development
           </p>
         </header>
 
         {/* Category Filter */}
-        <div className="blog-filters">
+        <div className="blog-filters" data-reveal>
           <TerminalWindow title="filters" showControls={false}>
             <div className="filter-buttons">
               <button
