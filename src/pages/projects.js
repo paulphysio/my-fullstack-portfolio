@@ -45,7 +45,7 @@ export default function Projects() {
     <Layout>
       <Head>
         <title>Projects - Paul Madu</title>
-        <meta name="description" content="Explore Paul Madu's fullstack development projects including VERTIKAL originals streetwear store, SempaiHQ (Web3 platform), ChatsUp live chat for websites, Virginia Cakes e-commerce, and Jeshfield Global corporate website." />
+        <meta name="description" content="Explore Paul Madu's fullstack development projects including VERTIKAL originals streetwear store, SempaiHQ (Web3 platform), ChatsUp live chat for websites, Yuvlex academic records delivery, Virginia Cakes e-commerce, and Jeshfield Global corporate website." />
       </Head>
 
       <div className="projects-container">
